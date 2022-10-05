@@ -1,0 +1,186 @@
+/* Christine Bui
+12/06/2020
+COP 3223C Lecture 5 Assignment */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+#define SUITS 4
+#define FACES 13
+
+void dealAcard(int suitsInHand[], int facesInHand[], char *suits[], char *faces[]);
+void dealAhand(int suitsInHand[], int facesInHand[], char *suits[], char *faces[]);
+void analyzeHand(int suitsInHand[], int facesInHand[]);
+
+      int straight;
+      int flush;
+      int four;
+      int three;
+      int pairs; 
+
+int main() {
+      char *suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+      char  *faces[13]  =  {"Ace",  "Two",  "Three",  "Four",  "Five",  "Six",  "Seven",  "Eight",  "Nine",  "Ten", "Jack", "Queen", "King"};
+  
+      int deck[4][13] = {0};
+      int i;
+      int handOne;
+      int handTwo;
+      srand(time(NULL));        // randomly generates cards
+
+      for(i = 0; i < 2; i++){ 
+          if(i==0){
+                printf("HAND ONE :\n");     // first hand
+          } 
+          if(i==1){
+                printf("HAND TWO :\n");     // second hand 
+          } 
+
+      int suitsInHand[4] = {0,0,0,0};                       // array for suitsInHand
+      int facesInHand[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};    // array for facesInHand
+
+      dealAhand(suitsInHand, facesInHand, suits, faces);
+      analyzeHand(suitsInHand, facesInHand);
+      if(i==0){
+      
+      if (straight && flush) {
+                handOne=9;
+                printf("Straight flush\n\n");}
+      else if (four)  {
+                handOne=8;
+                printf("Four of a kind\n\n");}
+      else if (three && pairs == 1)   {
+                handOne=7;
+                printf("Full house\n\n");}
+      else if (flush)   {
+                handOne=6;
+                printf("Flush\n\n");}
+      else if (straight)     {
+                handOne=5;
+                printf("Straight\n\n");}
+      else if (three)        {
+                handOne=4;
+                printf("Three of a kind\n\n");}
+      else if (pairs == 2)   {
+                handOne=3;
+                printf("Two pairs\n\n");}
+      else if (pairs == 1)   {
+                handOne=2;
+                printf("Pair\n\n");}
+      else   {
+                handOne=1;              
+                printf("High card\n\n");}
+      }
+
+      else if(i==1){
+                if (straight && flush) {
+                handTwo=9;
+                printf("Straight flush\n\n");}
+      else if (four)  {
+                handTwo=8;
+                printf("Four of a kind\n\n");}
+      else if (three && pairs == 1)   {
+                handTwo=7;
+                printf("Full house\n\n");}
+      else if (flush)   {
+                handTwo=6;
+                printf("Flush\n\n");}
+      else if (straight)    {
+                handTwo=5;
+                printf("Straight\n\n");}
+      else if (three)   {
+                handTwo=4;
+                printf("Three of a kind\n\n");}
+      else if (pairs == 2)   {
+                handTwo=3;
+                printf("Two pairs\n\n");}
+      else if (pairs == 1)   {
+                handTwo=2;
+                printf("Pair\n\n");}
+      else   {
+                handTwo=1;              
+                printf("High card\n\n");}
+      }
+}
+
+      if(handTwo>handOne){printf("Hand Two won");
+}     else if(handTwo== handOne){printf("Tie");
+}     else{ printf("Hand One won");
+}
+}
+
+void dealAhand(int suitsInHand[], int facesInHand[], char *suits[], char *faces[]) {
+    int i;
+    for (i = 0; i < 5; i++)
+    {
+        dealAcard( suitsInHand, facesInHand, suits, faces); }
+            
+            int c;
+            for(c=0;c<SUITS;c++){
+            printf("%d ", suitsInHand[c]);
+}
+            printf("\n");
+            int j;
+            for(j=0;j<FACES;j++){
+            printf("%d ", facesInHand[j]);
+}
+            printf("\n \n");
+}
+
+void dealAcard(int suitsInHand[], int facesInHand[], char *suits[], char *faces[]) { int suitIndex, faceIndex;
+     suitIndex = rand() % 4;
+     faceIndex = rand() % 13;
+     facesInHand[faceIndex] = facesInHand[faceIndex]+1;
+     suitsInHand[suitIndex]= suitsInHand[suitIndex] +1;
+     
+     printf("%s of %s \n", faces[faceIndex], suits[suitIndex]);
+}
+
+/* analyzeHand: Determines whether the hand contains a straight, a flush, four-of-a-kind, and/or  a  three-of-a-kind;  determines  the  number  of  pairs;  stores  the  results  into  the  external  variables  straight, 
+flush, four, three, and pairs. */
+
+#define NUM_RANKS 13
+#define TRUE 1 
+#define FALSE 0
+
+void analyzeHand(int suitsInHand[], int facesInHand[]) {
+     int num_consec = 0;
+     int rank, suit;
+
+     straight = FALSE;
+     flush = FALSE;
+     four = FALSE;
+     three = FALSE;
+     pairs = 0;
+
+     // check for flush - 5 cards of the same suit
+     for (suit = 0; suit < SUITS; suit++)
+          if (suitsInHand[suit] == 5)
+                   flush = TRUE;
+
+     // check for straight - eg. One each of 5,6,7,8,9
+     // locates the first card
+     rank = 0;
+     while (facesInHand[rank] == 0) 
+            rank++;
+
+     // count the consecutive non-zero faces
+     for (; rank < FACES && facesInHand[rank]; rank++)
+            num_consec++;
+
+     if (num_consec == 5) {
+            straight = TRUE;
+            return;
+     }
+
+     /* check for 4-of-a-kind, 3-of-a-kind, and pairs */
+    for (rank = 0; rank < NUM_RANKS; rank++) {
+            if (facesInHand[rank] == 4) 
+                     four = TRUE;
+            if (facesInHand[rank] == 3) 
+                     three = TRUE;
+            if (facesInHand[rank] == 2) 
+                     pairs++;
+    }
+}
